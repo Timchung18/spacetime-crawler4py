@@ -6,6 +6,7 @@ import ast
 import sys
 from simhash import Simhash
 from utils import get_urlhash
+import os
 
 save = open(os.path.join(sys.path[0], "simhash.txt"), "r")
 

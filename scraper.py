@@ -72,7 +72,8 @@ def extract_next_links(url, resp):
     urlHash = get_urlhash(url)
     URL_LIST_FILE.write(urlHash + "," + url + "\n")
     save_file = open(os.path.join("./Pages", urlHash+".txt"), "w")  # TODO: hash the url for the text file name
-    save_file.write(soup.get_text())
+    #save_file.write(soup.get_text())
+    save_file.write("".join(soup.strings))
 
     ret_list = []
 

@@ -107,7 +107,9 @@ def extract_next_links(url, resp):
                         abs_path = urllib.parse.urljoin(url, i['href'])
                         print("valid",2, abs_path)
                         # ret_list.append("https:"+i['href'])
-                        ret_list.append(abs_path)
+                        
+                        if get_urlhash(abs_path) not in URL_SET:
+                            ret_list.append(abs_path)
                         
                     #else:
                     #    print("invalid",2, "https:"+i['href'])
@@ -117,7 +119,9 @@ def extract_next_links(url, resp):
                         print("valid", 3, abs_path)
                         print(i['href'])
                         # ret_list.append(url + i['href'])
-                        ret_list.append(abs_path)
+                        
+                        if get_urlhash(abs_path) not in URL_SET:
+                            ret_list.append(abs_path)
                     # else:
                     #     print("invalid",3,url+i['href'])
             else:
@@ -125,7 +129,8 @@ def extract_next_links(url, resp):
                     abs_path = urllib.parse.urljoin(url, i['href'])
                     print("valid", 4, abs_path)
                     # ret_list.append(i['href'])
-                    ret_list.append(abs_path)
+                    if get_urlhash(abs_path) not in URL_SET:
+                        ret_list.append(abs_path)
                 #else:s
                 #    print("invalid", 4, i['href'])
 

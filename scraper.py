@@ -10,12 +10,13 @@ from utils import get_urlhash
 save = open(os.path.join(sys.path[0], "simhash.txt"), "r")
 
 line = save.readline()
-lastLine = ""
+SIMHASH_SET = set()
 while line:
-    lastLine = line
+    SIMHASH_SET.add(line)
+    #lastLine = line
     line = save.readline()
 
-SIMHASH_SET = ast.literal_eval(lastLine)
+#SIMHASH_SET = ast.literal_eval(lastLine)
 
 save.close()
 
@@ -58,8 +59,10 @@ def extract_next_links(url, resp):
         return list()
     print(url)
     soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
+    soupString = "".join(soup.strings)
 
-    newHash = Simhash(soup.get_text())
+
+    newHash = Simhash(soupString)
 
     # TODO probably change this to use SimhashIndex, apparently allows near duplicate querying in efficient way
     for v in SIMHASH_SET:
@@ -73,7 +76,7 @@ def extract_next_links(url, resp):
     URL_LIST_FILE.write(urlHash + "," + url + "\n")
     save_file = open(os.path.join("./Pages", urlHash+".txt"), "w")  # TODO: hash the url for the text file name
     #save_file.write(soup.get_text())
-    save_file.write("".join(soup.strings))
+    save_file.write(soupString+'\n')
 
     ret_list = []
 

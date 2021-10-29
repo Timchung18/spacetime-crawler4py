@@ -7,29 +7,25 @@ import sys
 from simhash import Simhash
 from utils import get_urlhash
 import os
-import urllib
-import pickle
+import shelve
 
-save = open(os.path.join(sys.path[0], "simhb.txt"), "rb")
-SIMHASH_SET = set()
+
+SIMH = shelve.open("simh.shelve")
+
+save = open(os.path.join(sys.path[0], "simhash.txt"), "r")
+
 line = save.readline()
+SIMHASH_SET = set()
+while line:
+    SIMHASH_SET.add(line)
+    #lastLine = line
+    line = save.readline()
 
-#while line:
-#    SIMHASH_SET.add(pickle.load()
-#    line = save.readline()
-
-while True:
-    try:
-        SIMHASH_SET.add(pickle.load(save))
-        
-    except EOFError:
-        break
-
-# SIMHASH_SET = ast.literal_eval(lastLine)
+#SIMHASH_SET = ast.literal_eval(lastLine)
 
 save.close()
 
-simhash = open(os.path.join(sys.path[0], "simhash.txt"), "a")
+simhash = open(os.path.join(sys.path[0], "simhash.txt"), "w")
 
 PATTERN_OBJECT = re.compile(r".*\.ics\.uci\.edu\/.*|.*\.ics\.uci\.edu$|"
                             r".*\.cs\.uci\.edu\/.*|.*\.cs\.uci\.edu$|"
@@ -68,27 +64,26 @@ def extract_next_links(url, resp):
         return list()
     print(url)
     soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
-
     soupString = "".join(soup.strings)
-    
+
+
     newHash = Simhash(soupString)
 
     # TODO probably change this to use SimhashIndex, apparently allows near duplicate querying in efficient way
-    for v in SIMHASH_SET:
+    for v in SIMH.values():
         if newHash.distance(v) < SIMILARITY_THRESHOLD:
             return list()
 
     # TODO Double check this line
     #simhash.write(str(newHash)+'\n')
-    #simhash.flush()
-    pickle.dump(newHash,simhash)
-    print(newHash.value)
 
     urlHash = get_urlhash(url)
     URL_LIST_FILE.write(urlHash + "," + url + "\n")
     save_file = open(os.path.join("./Pages", urlHash+".txt"), "w")  # TODO: hash the url for the text file name
     #save_file.write(soup.get_text())
-    save_file.write(soupString)
+    save_file.write(soupString+'\n')
+
+    SIMH[urlHash] = newHash
 
     ret_list = []
 
@@ -97,29 +92,22 @@ def extract_next_links(url, resp):
             if i['href'][0] == "/":
                 if len(i['href']) > 1 and i['href'][1] == "/":
                     if is_valid(i['href']):
-                        abs_path = urllib.parse.urljoin(url, i['href'])
-                        print("valid",2, abs_path)
-                        # ret_list.append("https:"+i['href'])
-                        ret_list.append(abs_path)
-                        
+                        print("valid",2, "https:"+i['href'])
+                        ret_list.append("https:"+i['href'])
                     #else:
                     #    print("invalid",2, "https:"+i['href'])
                 else:
                     if is_valid(url+i['href']):
-                        abs_path = urllib.parse.urljoin(url, i['href'])
-                        print("valid", 3, abs_path)
+                        print("valid", 3, url + i['href'])
                         print(i['href'])
-                        # ret_list.append(url + i['href'])
-                        ret_list.append(abs_path)
+                        ret_list.append(url + i['href'])
                     # else:
                     #     print("invalid",3,url+i['href'])
             else:
                 if is_valid(i['href']):
-                    abs_path = urllib.parse.urljoin(url, i['href'])
-                    print("valid", 4, abs_path)
-                    # ret_list.append(i['href'])
-                    ret_list.append(abs_path)
-                #else:s
+                    print("valid", 4, i['href'])
+                    ret_list.append(i['href'])
+                #else:
                 #    print("invalid", 4, i['href'])
 
     return ret_list

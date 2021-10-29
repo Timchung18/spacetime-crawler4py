@@ -50,7 +50,7 @@ while LINE:
     URL_SET.add(LINE)
     LINE = URL_LIST_FILE.readline()
 URL_LIST_FILE.close()
-URL_LIST_FILE = open("url_list.txt", "w")
+URL_LIST_FILE = open("url_list.txt", "a")
 
 SIMILARITY_THRESHOLD = .80
 

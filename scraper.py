@@ -91,11 +91,12 @@ def extract_next_links(url, resp):
 
     urlHash = get_urlhash(url)
     URL_LIST_FILE.write(urlHash + "," + url + "\n")
+    URL_LIST_FILE.flush()
     save_file = open(os.path.join("./Pages", urlHash+".txt"), "w")  # TODO: hash the url for the text file name
     #save_file.write(soup.get_text())
     save_file.write(soupString)
 
-    SIMH[urlHash] = newHash
+    # SIMH[urlHash] = newHash
 
     ret_list = []
 
@@ -105,32 +106,38 @@ def extract_next_links(url, resp):
                 if len(i['href']) > 1 and i['href'][1] == "/":
                     if is_valid(i['href']):
                         abs_path = urllib.parse.urljoin(url, i['href'])
-                        print("valid",2, abs_path)
+                        # print("valid",2, abs_path)
                         # ret_list.append("https:"+i['href'])
                         
                         if get_urlhash(abs_path) not in URL_SET:
                             ret_list.append(abs_path)
                         
+                            print("valid",2, abs_path)
+                        # ret_list.append("https:"+i['href'])
                     #else:
                     #    print("invalid",2, "https:"+i['href'])
                 else:
                     if is_valid(url+i['href']):
                         abs_path = urllib.parse.urljoin(url, i['href'])
-                        print("valid", 3, abs_path)
-                        print(i['href'])
+                        # print("valid", 3, abs_path)
+                        # print(i['href'])
                         # ret_list.append(url + i['href'])
                         
                         if get_urlhash(abs_path) not in URL_SET:
                             ret_list.append(abs_path)
+                            print("valid",3, abs_path)
+                        # ret_list.append("https:"+i['href'])
                     # else:
                     #     print("invalid",3,url+i['href'])
             else:
                 if is_valid(i['href']):
                     abs_path = urllib.parse.urljoin(url, i['href'])
-                    print("valid", 4, abs_path)
+                    # print("valid", 4, abs_path)
                     # ret_list.append(i['href'])
                     if get_urlhash(abs_path) not in URL_SET:
                         ret_list.append(abs_path)
+                        print("valid", 4, abs_path)
+                    # ret_list.append(i['href'])
                 #else:s
                 #    print("invalid", 4, i['href'])
 

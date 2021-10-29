@@ -1,0 +1,5 @@
+<simhash.Simhash object at 0x7f5c09b385c0>
+<simhash.Simhash object at 0x7f5c0a0063c8>
+<simhash.Simhash object at 0x7f5c069f1710>
+<simhash.Simhash object at 0x7f5c09b1ab70>
+<simhash.Simhash object at 0x7f5c069a6ef0>

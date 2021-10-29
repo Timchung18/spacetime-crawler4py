@@ -32,7 +32,7 @@ freq = open(os.path.join(sys.path[0], "freq.txt"), "w")
 
 long = open(os.path.join(sys.path[0], "tkCount.txt"), "a")
 
-EXCLUDE_SET = {"processor.py", "freq.txt", "tkCount.txt"}
+EXCLUDE_SET = {"processor.py", "freq.txt", "tkCount.txt",".ipynb_checkpoints"}
 
 i = 0
 while True:
@@ -43,8 +43,8 @@ while True:
 
         # maybe save the files into a specific directory and then dont have to worry about filtering
         for file in os.listdir(sys.path[0]):
-
-            if file not in EXCLUDE_SET:
+            print(file)
+            if file not in EXCLUDE_SET and file[0] != ".":
 
                 print(file)
                 fp = open(os.path.join(sys.path[0], file),'r')
@@ -62,7 +62,7 @@ while True:
                 long.write(file + "," + str(totalWords) + "\n")
 
                 # TODO uncomment this when deploying
-                #os.remove(os.path.join(os.getcwd(), file))
+                os.remove(os.path.join(os.getcwd(), file))
 
         freq.write(str(dict(WORD_DICT))+"\n")
 

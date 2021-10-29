@@ -86,8 +86,8 @@ def extract_next_links(url, resp):
     #simhash.write(str(newHash)+'\n')
 
     #simhash.flush()
-    pickle.dump(newHash,simhash)
-    print(newHash.value)
+    #pickle.dump(newHash,simhash)
+    #print(newHash.value)
 
     urlHash = get_urlhash(url)
     URL_LIST_FILE.write(urlHash + "," + url + "\n")

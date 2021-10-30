@@ -11,6 +11,11 @@ import shelve
 import urllib
 import pickle
 
+from dill import Pickler, Unpickler
+
+shelve.pickler = Pickler
+shelve.Unpickler = Unpickler
+
 SIMH = shelve.open("simh.shelve")
 
 

@@ -65,10 +65,11 @@ def extract_next_links(url, resp):
     newHash = DifHash(soupString)
     
     # TODO probably change this to use SimhashIndex, apparently allows near duplicate querying in efficient way
-    for v in SIMH.values():
-        #if newHash.distance(v) <= SIMILARITY_THRESHOLD:
-        if simCheck(newHash,v) >= DIFH_THRESHOLD:
-          return list()
+    if newHash is not False:
+      for v in SIMH.values():
+          #if newHash.distance(v) <= SIMILARITY_THRESHOLD:
+          if simCheck(newHash,v) >= DIFH_THRESHOLD:
+            return list()
 
     urlHash = get_urlhash(url)
     URL_LIST_FILE.write(urlHash + "," + url + "\n")
@@ -76,7 +77,9 @@ def extract_next_links(url, resp):
     save_file = open(os.path.join("./Pages", urlHash+".txt"), "w")
     save_file.write(soupString)
 
-    SIMH[urlHash] = newHash
+    if newHash is not False:
+      SIMH[urlHash] = newHash
+     
 
     ret_list = []
 

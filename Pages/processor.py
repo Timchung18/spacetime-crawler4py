@@ -8,8 +8,8 @@ import time
 TOKENIZER = RegexpTokenizer(r'\w+')
 # Maybe import NLTK for faster tokenization and word counting
 
-save = open(os.path.join(sys.path[0], "freq.txt"), "r")
-#save = open("./freq.txt", "r")
+save = open(os.path.join(sys.path[0], "tokenFreq.txt"), "r")
+#save = open("./tokenFreq.txt", "r")
 # TODO load the data into variables
 
 
@@ -17,7 +17,7 @@ save = open(os.path.join(sys.path[0], "freq.txt"), "r")
 
 
 line = save.readline()
-lastLine = ""
+lastLine = "{}"
 while line:
     lastLine = line
     line = save.readline()
@@ -28,11 +28,11 @@ WORD_DICT = defaultdict(int, ast.literal_eval(lastLine))
 save.close()
 
 
-freq = open(os.path.join(sys.path[0], "freq.txt"), "w")
+freq = open(os.path.join(sys.path[0], "tokenFreq.txt"), "w")
 
-long = open(os.path.join(sys.path[0], "tkCount.txt"), "a")
+long = open(os.path.join(sys.path[0], "pageWordCount.txt"), "a")
 
-EXCLUDE_SET = {"processor.py", "freq.txt", "tkCount.txt",".ipynb_checkpoints"}
+EXCLUDE_SET = {"processor.py", "tokenFreq.txt", "pageWordCount.txt",".ipynb_checkpoints"}
 
 i = 0
 while True:
@@ -52,7 +52,7 @@ while True:
                 totalWords = 0
                 line = fp.readline()
                 while line:
-                    words = TOKENIZER.tokenize(line)
+                    words = TOKENIZER.tokenize(line.lower())
                     totalWords += len(words)
                     for w in words:
                         WORD_DICT[w] += 1

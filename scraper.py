@@ -13,32 +13,13 @@ import pickle
 
 from dill import Pickler, Unpickler
 
+DEBUG = False
+
 shelve.pickler = Pickler
 shelve.Unpickler = Unpickler
 
 SIMH = shelve.open("simh.shelve")
 
-
-save = open(os.path.join(sys.path[0], "simhb.txt"), "rb")
-SIMHASH_SET = set()
-line = save.readline()
-
-#while line:
-#    SIMHASH_SET.add(pickle.load()
-#    line = save.readline()
-
-while True:
-    try:
-        SIMHASH_SET.add(pickle.load(save))
-        
-    except EOFError:
-        break
-
-# SIMHASH_SET = ast.literal_eval(lastLine)
-
-save.close()
-
-simhash = open(os.path.join(sys.path[0], "simhash.txt"), "a")
 
 PATTERN_OBJECT = re.compile(r".*\.ics\.uci\.edu\/.*|.*\.ics\.uci\.edu$|"
                             r".*\.cs\.uci\.edu\/.*|.*\.cs\.uci\.edu$|"
@@ -52,12 +33,12 @@ URL_LIST_FILE = open("url_list.txt", "r")  # holds all (hashed) URLS that we've 
 
 LINE = URL_LIST_FILE.readline()
 while LINE:
-    URL_SET.add(LINE)
+    URL_SET.add(LINE.split(",")[0])
     LINE = URL_LIST_FILE.readline()
 URL_LIST_FILE.close()
 URL_LIST_FILE = open("url_list.txt", "a")
 
-SIMILARITY_THRESHOLD = .80
+SIMILARITY_THRESHOLD = 9
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
@@ -71,9 +52,7 @@ def extract_next_links(url, resp):
     #   cant say that it does thouhg, not sure how it works exctly since it's a shelve file, shelf -> persistent dictionary
 
 
-    if resp.status > 600:
-        return list()
-    elif resp.status >= 300 < 400:
+    if resp.status != 200:
         return list()
     print(url)
     soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
@@ -84,24 +63,16 @@ def extract_next_links(url, resp):
 
     # TODO probably change this to use SimhashIndex, apparently allows near duplicate querying in efficient way
     for v in SIMH.values():
-        if newHash.distance(v) < SIMILARITY_THRESHOLD:
+        if newHash.distance(v) <= SIMILARITY_THRESHOLD:
             return list()
-
-    # TODO Double check this line
-    #simhash.write(str(newHash)+'\n')
-
-    #simhash.flush()
-    #pickle.dump(newHash,simhash)
-    #print(newHash.value)
 
     urlHash = get_urlhash(url)
     URL_LIST_FILE.write(urlHash + "," + url + "\n")
     URL_LIST_FILE.flush()
-    save_file = open(os.path.join("./Pages", urlHash+".txt"), "w")  # TODO: hash the url for the text file name
-    #save_file.write(soup.get_text())
+    save_file = open(os.path.join("./Pages", urlHash+".txt"), "w")
     save_file.write(soupString)
 
-    # SIMH[urlHash] = newHash
+    SIMH[urlHash] = newHash
 
     ret_list = []
 
@@ -111,40 +82,27 @@ def extract_next_links(url, resp):
                 if len(i['href']) > 1 and i['href'][1] == "/":
                     if is_valid(i['href']):
                         abs_path = urllib.parse.urljoin(url, i['href'])
-                        # print("valid",2, abs_path)
-                        # ret_list.append("https:"+i['href'])
-                        
                         if get_urlhash(abs_path) not in URL_SET:
                             ret_list.append(abs_path)
                         
-                            print("valid",2, abs_path)
-                        # ret_list.append("https:"+i['href'])
-                    #else:
-                    #    print("invalid",2, "https:"+i['href'])
+                            if DEBUG:
+                                print("valid",2, abs_path)
                 else:
                     if is_valid(url+i['href']):
                         abs_path = urllib.parse.urljoin(url, i['href'])
-                        # print("valid", 3, abs_path)
-                        # print(i['href'])
-                        # ret_list.append(url + i['href'])
                         
                         if get_urlhash(abs_path) not in URL_SET:
                             ret_list.append(abs_path)
-                            print("valid",3, abs_path)
-                        # ret_list.append("https:"+i['href'])
-                    # else:
-                    #     print("invalid",3,url+i['href'])
+                            if DEBUG:
+                                print("valid",3, abs_path)
             else:
                 if is_valid(i['href']):
                     abs_path = urllib.parse.urljoin(url, i['href'])
-                    # print("valid", 4, abs_path)
-                    # ret_list.append(i['href'])
+
                     if get_urlhash(abs_path) not in URL_SET:
                         ret_list.append(abs_path)
-                        print("valid", 4, abs_path)
-                    # ret_list.append(i['href'])
-                #else:s
-                #    print("invalid", 4, i['href'])
+                        if DEBUG:
+                            print("valid", 4, abs_path)
 
     return ret_list
 

@@ -38,7 +38,9 @@ def DifHash(input: str):
 
     #print(bVMatrix)
     #print(weightsMatrix)
-
+    if bVMatrix is False:
+        print(input)
+        
     bVMatrix = bVMatrix.astype('int32')
     bVMatrix[bVMatrix == 0] = -1
     #print(bVMatrix)

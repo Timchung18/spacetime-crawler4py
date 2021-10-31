@@ -1,0 +1,165 @@
+
+
+
+
+
+
+    2021 June Maintenance  June 14th through June 18    [Support Wiki]
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+skip to content
+
+
+
+
+
+
+          [[2021 June Maintenance  June 14th through June 18]]
+        
+
+Support Wiki 
+
+
+Trace: 
+
+
+
+Show page 
+
+Recent ChangesSitemapLog In 
+
+
+
+Media Manager
+
+Namespaces
+Choose namespace
+
+
+[root]
+
+accounts
+backups
+commands
+courses
+group
+hardware
+icsdc
+labs
+linux
+projects
+security
+services
+
+database
+datacenter
+sun_grid_engine
+
+
+software
+virtual_environments
+wiki
+windows
+
+
+
+
+
+Media Files
+
+Media Files
+Upload
+Search
+
+
+Files in services:database
+
+
+ Thumbnails
+ Rows
+
+ Name
+ Date
+
+Apply
+
+
+
+
+
+Sorry, you don't have enough rights to read files.
+
+
+
+File
+
+View
+Edit
+History
+
+virtual_environments:jupyterhub:vscode.jpg
+
+
+
+
+
+Date:2019/06/28 15:46
+Filename:vscode.jpg
+Photographer:Wunsch, Hans
+Format:JPEG
+Size:219KB
+Width:1924
+Height:1058
+
+
+References for:Jupyterhub @ ICS
+
+
+
+
+
+
+
+
+
+projects/maint-spring-2021.txt · Last modified: 2021/06/15 10:27 by wdcohen 
+
+
+
+
+
+Show pageOld revisions 
+
+Media ManagerBack to top 
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -10,6 +10,7 @@ import os
 import shelve
 import urllib
 import pickle
+from difHash import *
 
 from dill import Pickler, Unpickler
 
@@ -39,6 +40,7 @@ URL_LIST_FILE.close()
 URL_LIST_FILE = open("url_list.txt", "a")
 
 SIMILARITY_THRESHOLD = 9
+DIFH_THRESHOLD = 29/32
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
@@ -59,12 +61,14 @@ def extract_next_links(url, resp):
 
     soupString = "".join(soup.strings)
     
-    newHash = Simhash(soupString)
-
+    #newHash = Simhash(soupString)
+    newHash = DifHash(soupString)
+    
     # TODO probably change this to use SimhashIndex, apparently allows near duplicate querying in efficient way
     for v in SIMH.values():
-        if newHash.distance(v) <= SIMILARITY_THRESHOLD:
-            return list()
+        #if newHash.distance(v) <= SIMILARITY_THRESHOLD:
+        if simCheck(newHash,v) >= DIFH_THRESHOLD:
+          return list()
 
     urlHash = get_urlhash(url)
     URL_LIST_FILE.write(urlHash + "," + url + "\n")

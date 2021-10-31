@@ -39,6 +39,8 @@ def DifHash(input: str):
     #print(bVMatrix)
     #print(weightsMatrix)
     if bVMatrix is False:
+        f = open(fail.txt,"w+")
+        f.write(input)
         print(input)
         
     bVMatrix = bVMatrix.astype('int32')

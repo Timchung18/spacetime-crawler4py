@@ -27,6 +27,10 @@ PATTERN_OBJECT = re.compile(r".*\.ics\.uci\.edu\/.*|.*\.ics\.uci\.edu$|"
                             r".*\.informatics\.uci\.edu\/.*|.*\.informatics\.uci\.edu$|"
                             r".*\.stat\.uci\.edu\/.*|.*\.stat\.uci\.edu$|"
                             r".*today.uci.edu/department/information_computer_sciences\/.*")
+
+SWIKI_EXCLUDE_OBJECT = re.compile(r".*swiki\.ics\.uci\.edu.*=.*=.*=.*=.*=")
+QUERY_EXCLUDE_OBJECT = re.compile(r".*facebook=.*|.*twitter=.*|.*version=.*")
+
 FRAG_PATTERN = re.compile(r"#.*")
 
 URL_SET = set()  # set of all (hashed) URLs we've been to
@@ -125,7 +129,11 @@ def is_valid(url):
             return False
         #  "*.ics.uci.edu/*", "*.cs.uci.edu/*", "*.informatics.uci.edu/*",
         #  "*.stat.uci.edu/*", "today.uci.edu/department/information_computer_sciences/*"
-
+        elif re.match(SWIKI_EXCLUDE_OBJECT, parsed.geturl()):
+            return False
+        elif re.match(QUERY_EXCLUDE_OBJECT, parsed.geturl()):
+            return False
+        
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
             + r"|png|tiff?|mid|mp2|mp3|mp4"

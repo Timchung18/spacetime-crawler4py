@@ -29,9 +29,9 @@ PATTERN_OBJECT = re.compile(r".*\.ics\.uci\.edu\/.*|.*\.ics\.uci\.edu$|"
                             r".*today.uci.edu/department/information_computer_sciences\/.*")
 
 SWIKI_EXCLUDE_OBJECT = re.compile(r".*swiki\.ics\.uci\.edu.*=.*=.*=.*=.*=")
-QUERY_EXCLUDE_OBJECT = re.compile(r".*facebook=.*|.*twitter=.*|.*version=.*")
+QUERY_EXCLUDE_OBJECT = re.compile(r".*share=facebook.*|.*share=twitter.*|.*version=.*")
 
-FRAG_PATTERN = re.compile(r"#.*")
+FRAG_PATTERN = re.compile(r".*#.*")
 
 URL_SET = set()  # set of all (hashed) URLs we've been to
 URL_LIST_FILE = open("url_list.txt", "r")  # holds all (hashed) URLS that we've been to
@@ -44,7 +44,7 @@ URL_LIST_FILE.close()
 URL_LIST_FILE = open("url_list.txt", "a")
 
 SIMILARITY_THRESHOLD = 9
-DIFH_THRESHOLD = 29/32
+DIFH_THRESHOLD = 4/32
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
@@ -74,7 +74,7 @@ def extract_next_links(url, resp):
     if newHash is not False:
       for v in SIMH.values():
           #if newHash.distance(v) <= SIMILARITY_THRESHOLD:
-          if simCheck(newHash,v) >= DIFH_THRESHOLD:
+          if simCheck(newHash,v) <= DIFH_THRESHOLD:
             return list()
 
     urlHash = get_urlhash(url)
@@ -116,8 +116,12 @@ def extract_next_links(url, resp):
                         ret_list.append(abs_path)
                         if DEBUG:
                             print("valid", 4, abs_path)
+        else:
+            tempSplit = i['href'].split("#")
+            ret_list.append(urllib.parse.urljoin(url, tempSplit[0]))
 
     return ret_list
+
 
 def is_valid(url):
     try:

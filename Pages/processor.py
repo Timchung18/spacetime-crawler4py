@@ -66,11 +66,7 @@ while True:
 
         freq.write(str(dict(WORD_DICT))+"\n")
 
-
-
-        assert i == 0
-        time.sleep(15)
-        i+= 1
+        time.sleep(3600)
 
     except KeyboardInterrupt:
         #print(WORD)

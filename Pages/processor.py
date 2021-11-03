@@ -43,10 +43,10 @@ while True:
 
         # maybe save the files into a specific directory and then dont have to worry about filtering
         for file in os.listdir(sys.path[0]):
-            print(file)
+            #print(file)
             if file not in EXCLUDE_SET and file[0] != ".":
 
-                print(file)
+                #print(file)
                 fp = open(os.path.join(sys.path[0], file),'r')
 
                 totalWords = 0
@@ -68,9 +68,8 @@ while True:
 
 
 
-        assert i == 0
-        time.sleep(15)
-        i+= 1
+        #assert i == 0
+        time.sleep(3600)
 
     except KeyboardInterrupt:
         #print(WORD)

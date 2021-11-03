@@ -30,6 +30,7 @@ PATTERN_OBJECT = re.compile(r".*\.ics\.uci\.edu\/.*|.*\.ics\.uci\.edu$|"
 
 SWIKI_EXCLUDE_OBJECT = re.compile(r".*swiki\.ics\.uci\.edu.*=.*=.*=.*=.*=")
 QUERY_EXCLUDE_OBJECT = re.compile(r".*share=facebook.*|.*share=twitter.*|.*version=.*")
+GITLAB_EXCLUDE_OBJECT = re.compile(r"gitlab\.ics\.uci\.edu\/[^\/]*\/[^\/]*\/[^\/]*")
 
 FRAG_PATTERN = re.compile(r".*#.*")
 
@@ -137,6 +138,8 @@ def is_valid(url):
             return False
         elif re.match(QUERY_EXCLUDE_OBJECT, parsed.geturl()):
             return False
+        elif re.match(GITLAB_EXCLUDE_OBJECT, parsed.geturl()):
+          return False
         
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"

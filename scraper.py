@@ -30,7 +30,7 @@ PATTERN_OBJECT = re.compile(r".*\.ics\.uci\.edu\/.*|.*\.ics\.uci\.edu$|"
 
 SWIKI_EXCLUDE_OBJECT = re.compile(r".*swiki\.ics\.uci\.edu.*=.*=.*=.*=.*=")
 QUERY_EXCLUDE_OBJECT = re.compile(r".*share=facebook.*|.*share=twitter.*|.*version=.*")
-GITLAB_EXCLUDE_OBJECT = re.compile(r"gitlab\.ics\.uci\.edu\/[^\/]*\/[^\/]*\/[^\/]*")
+GITLAB_EXCLUDE_OBJECT = re.compile(r"https:\/\/gitlab\.ics\.uci\.edu\/[^\/]*\/[^\/]*\/[^\/]*\/.*")
 
 FRAG_PATTERN = re.compile(r".*#.*")
 

@@ -45,7 +45,7 @@ URL_LIST_FILE.close()
 URL_LIST_FILE = open("url_list.txt", "a")
 
 SIMILARITY_THRESHOLD = 9
-DIFH_THRESHOLD = 4/32
+DIFH_THRESHOLD = 1/32
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)

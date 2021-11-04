@@ -28,9 +28,12 @@ PATTERN_OBJECT = re.compile(r".*\.ics\.uci\.edu\/.*|.*\.ics\.uci\.edu$|"
                             r".*\.stat\.uci\.edu\/.*|.*\.stat\.uci\.edu$|"
                             r".*today.uci.edu/department/information_computer_sciences\/.*")
 
-SWIKI_EXCLUDE_OBJECT = re.compile(r".*swiki\.ics\.uci\.edu.*=.*=.*=.*=.*=")
+
+SWIKI_EXCLUDE_OBJECT = re.compile(r".*swiki\.ics\.uci\.edu(([^=]*=[^=]*){4,})")
 QUERY_EXCLUDE_OBJECT = re.compile(r".*share=facebook.*|.*share=twitter.*|.*version=.*")
-GITLAB_EXCLUDE_OBJECT = re.compile(r"https:\/\/gitlab\.ics\.uci\.edu\/[^\/]*\/[^\/]*\/[^\/]*\/.*")
+GITLAB_EXCLUDE_OBJECT = re.compile(r"https:\/\/gitlab\.ics\.uci\.edu([^\/]*\/[^\/]*){4,}")
+
+ROOT_INCLUDE_OBJECT = re.compile(r"https:\/\/www\.(ics|stat|cs|informatics)\.uci\.edu\/[^\/]*\/$")
 
 FRAG_PATTERN = re.compile(r".*#.*")
 
@@ -44,8 +47,17 @@ while LINE:
 URL_LIST_FILE.close()
 URL_LIST_FILE = open("url_list.txt", "a")
 
-SIMILARITY_THRESHOLD = 9
 DIFH_THRESHOLD = 1/32
+
+SWIKI_MATCH = re.compile(r"swiki\.ics\.uci\.edu.*")
+SWIKI_THRESHOLD = 3/32
+
+GITLAB_MATCH = re.compile(r"gitlab\.ics\.uci\.edu.*")
+GITLAB_THRESHOLD = 2/32
+
+INTRANET_MATCH = re.compile(r"intranet\.ics\.uci\.edu.*")
+INTRANET_MATCH = 2/32
+
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
@@ -72,10 +84,21 @@ def extract_next_links(url, resp):
     newHash = DifHash(soupString)
     
     # TODO probably change this to use SimhashIndex, apparently allows near duplicate querying in efficient way
-    if newHash is not False:
-      for v in SIMH.values():
-          #if newHash.distance(v) <= SIMILARITY_THRESHOLD:
-          if simCheck(newHash,v) <= DIFH_THRESHOLD:
+    checkVal = DIFH_THRESHOLD
+	if newHash is not False:
+		if re.match(ROOT_INCLUDE_PATTERN, url):
+			pass
+		elif re.match(SWIKI_MATCH, url):
+			checkVal = SWIKI_THRESHOLD
+		elif re.match(GITLAB_MATCH, url):
+			checkVal = GITLAB_THRESHOLD
+		elif re.match(INTRANET_MATCH, url):
+			checkVal = INTRANET_THRESHOLD
+		else:
+			checkVal = DIFH_THRESHOLD
+			
+		for v in SIMH.values():
+          if simCheck(newHash,v) <= checkVal:
             return list()
 
     urlHash = get_urlhash(url)

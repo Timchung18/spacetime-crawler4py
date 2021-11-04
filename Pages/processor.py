@@ -32,7 +32,7 @@ freq = open(os.path.join(sys.path[0], "tokenFreq.txt"), "w")
 
 long = open(os.path.join(sys.path[0], "pageWordCount.txt"), "a")
 
-EXCLUDE_SET = {"processor.py", "tokenFreq.txt", "pageWordCount.txt",".ipynb_checkpoints"}
+EXCLUDE_SET = {"processor.py", "tokenFreq.txt", "pageWordCount.txt",".ipynb_checkpoints",".nfs00d0000000422d75000001bd"}
 
 i = 0
 while True:
@@ -43,10 +43,10 @@ while True:
 
         # maybe save the files into a specific directory and then dont have to worry about filtering
         for file in os.listdir(sys.path[0]):
-            print(file)
+            #print(file)
             if file not in EXCLUDE_SET and file[0] != ".":
 
-                print(file)
+                #print(file)
                 fp = open(os.path.join(sys.path[0], file),'r')
 
                 totalWords = 0
@@ -66,6 +66,9 @@ while True:
 
         freq.write(str(dict(WORD_DICT))+"\n")
 
+
+
+        #assert i == 0
         time.sleep(3600)
 
     except KeyboardInterrupt:

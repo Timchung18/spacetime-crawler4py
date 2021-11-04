@@ -4,7 +4,6 @@ from bs4 import BeautifulSoup
 import datetime
 import ast
 import sys
-from simhash import Simhash
 from utils import get_urlhash
 import os
 import shelve
@@ -21,13 +20,11 @@ shelve.Unpickler = Unpickler
 
 SIMH = shelve.open("simh.shelve")
 
-
 PATTERN_OBJECT = re.compile(r".*\.ics\.uci\.edu\/.*|.*\.ics\.uci\.edu$|"
                             r".*\.cs\.uci\.edu\/.*|.*\.cs\.uci\.edu$|"
                             r".*\.informatics\.uci\.edu\/.*|.*\.informatics\.uci\.edu$|"
                             r".*\.stat\.uci\.edu\/.*|.*\.stat\.uci\.edu$|"
                             r".*today.uci.edu/department/information_computer_sciences\/.*")
-
 
 SWIKI_EXCLUDE_OBJECT = re.compile(r".*swiki\.ics\.uci\.edu(([^=]*=[^=]*){4,})")
 QUERY_EXCLUDE_OBJECT = re.compile(r".*share=facebook.*|.*share=twitter.*|.*version=.*")
@@ -47,69 +44,67 @@ while LINE:
 URL_LIST_FILE.close()
 URL_LIST_FILE = open("url_list.txt", "a")
 
-DIFH_THRESHOLD = 1/32
+DIFH_THRESHOLD = 1 / 32
 
 SWIKI_MATCH = re.compile(r"swiki\.ics\.uci\.edu.*")
-SWIKI_THRESHOLD = 3/32
+SWIKI_THRESHOLD = 3 / 32
 
 GITLAB_MATCH = re.compile(r"gitlab\.ics\.uci\.edu.*")
-GITLAB_THRESHOLD = 2/32
+GITLAB_THRESHOLD = 2 / 32
 
 INTRANET_MATCH = re.compile(r"intranet\.ics\.uci\.edu.*")
-INTRANET_MATCH = 2/32
+INTRANET_THRESHOLD = 2 / 32
 
 
 def scraper(url, resp):
     links = extract_next_links(url, resp)
     return [link for link in links if is_valid(link)]
 
+
 def extract_next_links(url, resp):
     # TODO: check if URL is in URL_SET, hash URL , then add url to URL_SET and to URL_LIST_FILE
-
 
     # TODO Look into what frontier.save is, if it saves all URLS and prevents cycles then don't need a lot of this support
     #   cant say that it does thouhg, not sure how it works exctly since it's a shelve file, shelf -> persistent dictionary
 
-
     if resp.status != 200:
         return list()
     elif resp.raw_response is None:
-      return list()
+        return list()
     print(url)
     soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
 
     soupString = "".join(soup.strings)
-    
-    #newHash = Simhash(soupString)
+
+    # newHash = Simhash(soupString)
     newHash = DifHash(soupString)
-    
+
     # TODO probably change this to use SimhashIndex, apparently allows near duplicate querying in efficient way
     checkVal = DIFH_THRESHOLD
-	if newHash is not False:
-		if re.match(ROOT_INCLUDE_PATTERN, url):
-			pass
-		elif re.match(SWIKI_MATCH, url):
-			checkVal = SWIKI_THRESHOLD
-		elif re.match(GITLAB_MATCH, url):
-			checkVal = GITLAB_THRESHOLD
-		elif re.match(INTRANET_MATCH, url):
-			checkVal = INTRANET_THRESHOLD
-		else:
-			checkVal = DIFH_THRESHOLD
-			
-		for v in SIMH.values():
-          if simCheck(newHash,v) <= checkVal:
-            return list()
+    if newHash is not False:
+        if re.match(ROOT_INCLUDE_OBJECT, url):
+            pass
+        elif re.match(SWIKI_MATCH, url):
+            checkVal = SWIKI_THRESHOLD
+        elif re.match(GITLAB_MATCH, url):
+            checkVal = GITLAB_THRESHOLD
+        elif re.match(INTRANET_MATCH, url):
+            checkVal = INTRANET_THRESHOLD
+        else:
+            checkVal = DIFH_THRESHOLD
+
+        for v in SIMH.values():
+            if simCheck(newHash, v) <= checkVal:
+                return list()
 
     urlHash = get_urlhash(url)
     URL_LIST_FILE.write(urlHash + "," + url + "\n")
     URL_LIST_FILE.flush()
-    save_file = open(os.path.join("./Pages", urlHash+".txt"), "w")
+    save_file = open(os.path.join("./Pages", urlHash + ".txt"), "w")
     save_file.write(soupString)
 
     if newHash is not False:
-      SIMH[urlHash] = newHash
-     
+        SIMH[urlHash] = newHash
 
     ret_list = []
 
@@ -121,17 +116,17 @@ def extract_next_links(url, resp):
                         abs_path = urllib.parse.urljoin(url, i['href'])
                         if get_urlhash(abs_path) not in URL_SET:
                             ret_list.append(abs_path)
-                        
+
                             if DEBUG:
-                                print("valid",2, abs_path)
+                                print("valid", 2, abs_path)
                 else:
-                    if is_valid(url+i['href']):
+                    if is_valid(url + i['href']):
                         abs_path = urllib.parse.urljoin(url, i['href'])
-                        
+
                         if get_urlhash(abs_path) not in URL_SET:
                             ret_list.append(abs_path)
                             if DEBUG:
-                                print("valid",3, abs_path)
+                                print("valid", 3, abs_path)
             else:
                 if is_valid(i['href']):
                     abs_path = urllib.parse.urljoin(url, i['href'])
@@ -150,7 +145,7 @@ def extract_next_links(url, resp):
 def is_valid(url):
     try:
         parsed = urlparse(url)
-        #if parsed.scheme not in set(["http", "https"]):
+        # if parsed.scheme not in set(["http", "https"]):
         #    return False
 
         if not re.match(PATTERN_OBJECT, parsed.geturl()):
@@ -162,8 +157,8 @@ def is_valid(url):
         elif re.match(QUERY_EXCLUDE_OBJECT, parsed.geturl()):
             return False
         elif re.match(GITLAB_EXCLUDE_OBJECT, parsed.geturl()):
-          return False
-        
+            return False
+
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"
             + r"|png|tiff?|mid|mp2|mp3|mp4"
@@ -175,5 +170,5 @@ def is_valid(url):
             + r"|rm|smil|wmv|swf|wma|zip|rar|gz)$", parsed.path.lower())
 
     except TypeError:
-        print ("TypeError for ", parsed)
+        print("TypeError for ", parsed)
         raise

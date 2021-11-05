@@ -32,7 +32,7 @@ GITLAB_EXCLUDE_OBJECT = re.compile(r"https:\/\/gitlab\.ics\.uci\.edu([^\/]*\/[^\
 
 ROOT_INCLUDE_OBJECT = re.compile(r"https:\/\/www\.(ics|stat|cs|informatics)\.uci\.edu\/[^\/]*\/$")
 
-MT_LIVE_EXCLUDE_OBJECT = re.compile(r".*mt-live\.ics\.uci\.edu([^&]*&[^&]*){4,}")
+MT_LIVE_EXCLUDE_OBJECT = re.compile(r".*(mt-live|cbcl)\.ics\.uci\.edu([^&]*&[^&]*){2,}")
 
 FRAG_PATTERN = re.compile(r".*#.*")
 

@@ -160,8 +160,11 @@ def is_valid(url):
             return False
         elif re.match(GITLAB_EXCLUDE_OBJECT, parsed.geturl()):
             return False
-	elif re.match(MT_LIVE_EXCLUDE_OBJECT, parsed.geturl()):
+        elif re.match(MT_LIVE_EXCLUDE_OBJECT, parsed.geturl()):
             return False
+        elif len(url) > 200:
+            return False
+
 
         return not re.match(
             r".*\.(css|js|bmp|gif|jpe?g|ico"

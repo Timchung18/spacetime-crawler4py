@@ -27,10 +27,12 @@ PATTERN_OBJECT = re.compile(r".*\.ics\.uci\.edu\/.*|.*\.ics\.uci\.edu$|"
                             r".*today.uci.edu/department/information_computer_sciences\/.*")
 
 SWIKI_EXCLUDE_OBJECT = re.compile(r".*swiki\.ics\.uci\.edu(([^=]*=[^=]*){4,})")
-QUERY_EXCLUDE_OBJECT = re.compile(r".*share=facebook.*|.*share=twitter.*|.*version=.*")
+QUERY_EXCLUDE_OBJECT = re.compile(r".*share=facebook.*|.*share=twitter.*|.*version=.*|.*replytocom.*")
 GITLAB_EXCLUDE_OBJECT = re.compile(r"https:\/\/gitlab\.ics\.uci\.edu([^\/]*\/[^\/]*){4,}")
 
 ROOT_INCLUDE_OBJECT = re.compile(r"https:\/\/www\.(ics|stat|cs|informatics)\.uci\.edu\/[^\/]*\/$")
+
+MT_LIVE_EXCLUDE_OBJECT = re.compile(r".*mt-live\.ics\.uci\.edu([^&]*&[^&]*){4,}")
 
 FRAG_PATTERN = re.compile(r".*#.*")
 
@@ -157,6 +159,8 @@ def is_valid(url):
         elif re.match(QUERY_EXCLUDE_OBJECT, parsed.geturl()):
             return False
         elif re.match(GITLAB_EXCLUDE_OBJECT, parsed.geturl()):
+            return False
+	elif re.match(MT_LIVE_EXCLUDE_OBJECT, parsed.geturl()):
             return False
 
         return not re.match(

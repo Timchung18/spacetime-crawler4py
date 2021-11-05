@@ -32,7 +32,7 @@ freq = open(os.path.join(sys.path[0], "tokenFreq.txt"), "w")
 
 long = open(os.path.join(sys.path[0], "pageWordCount.txt"), "a")
 
-EXCLUDE_SET = {"processor.py", "tokenFreq.txt", "pageWordCount.txt",".ipynb_checkpoints",".nfs00d0000000422d75000001bd"}
+EXCLUDE_SET = {"processor.py", "tokenFreq.txt", "pageWordCount.txt",".ipynb_checkpoints",".nfs00d0000000422d75000001bd", ".nfs001200000044b5b800000dcc",".nfs0092000000427f5000000dce",".nfs00c600000040a93e00000dcd"}
 
 i = 0
 while True:
